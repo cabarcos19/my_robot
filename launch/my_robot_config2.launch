@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<!-- RP LIDAR NODE -->
+	<node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode">
+	  <param name="serial_port"         type="string" value="/dev/ttyUSB0"/>  
+	  <param name="serial_baudrate"     type="int"    value="115200"/>
+	  <param name="frame_id"            type="string" value="laser"/>
+	  <param name="inverted"            type="bool"   value="false"/>
+	  <param name="angle_compensate"    type="bool"   value="true"/>
+	</node>
+	<!-- REALSENSE NODE -->
+	<include file="$(find realsense_camera)/launch/r200_nodelet_rgbd.launch"/>
+	
+	<!--HECTOR STUFF-->
+	
+	<node name="hector_mapping" pkg="hector_mapping" type="hector_mapping" output="screen">
+   		<remap from="map" to="/mapcurrent" />
+    	<param name="map_frame" value="/mapcurrent" />
+    	<param name="base_frame" value="/base_link" />
+    	<param name="odom_frame" value="/scanmatcher_odom" />
+		<param name="pub_odometry" value="true" />
+    	<param name="use_tf_scan_transformation" value="true"/>
+		<param name="use_tf_pose_start_estimate" value="false"/>
+    	<param name="pub_map_odom_transform" value="false" />
+    
+		<param name="map_resolution" value="0.025"/>
+    	<param name="map_size" value="256"/>
+    	<param name="map_start_x" value="0.5"/>
+    	<param name="map_start_y" value="0.5" />
+		<param name="map_multi_res_levels" value="2" />
+    
+    	<param name="update_factor_free" value="0.4" />
+    	<param name="update_factor_occupied" value="0.9" />    
+    	<param name="map_update_distance_thresh" value="0.4" />
+    	<param name="map_update_angle_thresh" value="0.06" />
+    	<param name="laser_z_min_value" value = "-1.0" />
+    	<param name="laser_z_max_value" value = "1.0" />
+
+    	<param name="advertise_map_service" value="true" />
+    
+    	<param name="scan_subscriber_queue_size" value="5"/>
+    	<param name="scan_topic" value="/scan"/>
+    	<param name="pub_map_scanmatch_transform" value="false" />
+    	<param name="tf_map_scanmatch_transform_frame_name" value="scanmatcher_frame" />
+	</node>
+	
+	<node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 0 0 0 0 base_link laser 100" />
+	
+	<node pkg="tf" type="static_transform_publisher" name="base_to_camera_broadcaster" args="0 0.35 -0.10 0 0 0 base_link camera_link 100" />
+	
+</launch>
+	
+	
+	
+	
+	
+	
