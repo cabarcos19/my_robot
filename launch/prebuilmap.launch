@@ -107,6 +107,7 @@
     	<rosparam file="$(find my_robot)/config/local_costmap_params.yaml" command="load" />
     	<rosparam file="$(find my_robot)/config/global_costmap_params.yaml" command="load" /> 
     	<rosparam file="$(find my_robot)/config/base_local_planner_params.yaml" command="load" />
+    	<rosparam file="$(find my_robot)/config/global_planner_params.yaml" command="load" />
      	<!-- LOAD COSTMAP_CONVERTER PARAMETERS HERE -->
     	<rosparam file="$(find my_robot)/config/costmap_converter_params.yaml" command="load" />
     	<param name="clearing_rotation_allowed" value="false" />
