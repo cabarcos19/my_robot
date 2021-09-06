@@ -1,8 +1,8 @@
 TebLocalPlannerROS:
 
   ## Costmap converter plugin   
-  costmap_converter_plugin: ""
-  #costmap_converter_plugin: "costmap_converter::CostmapToLinesDBSRANSAC"
+  #costmap_converter_plugin: ""
+  costmap_converter_plugin: "costmap_converter::CostmapToLinesDBSRANSAC"
   #costmap_converter_plugin: ""
   #costmap_converter_plugin: ""
   #costmap_converter_plugin: "" # deactivate plugin

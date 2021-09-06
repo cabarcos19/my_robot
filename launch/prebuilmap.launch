@@ -1,20 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-	<node pkg="map_server" type="map_server" name="map_server" args="$(find my_robot)/maps/final_circuit.yaml" />
-
-	<!-- RP LIDAR NODE -->
-	<node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode">
-	  <param name="serial_port"         type="string" value="/dev/ttyUSB0"/>  
-	  <param name="serial_baudrate"     type="int"    value="115200"/>
-	  <param name="frame_id"            type="string" value="laser"/>
-	  <param name="inverted"            type="bool"   value="false"/>
-	  <param name="angle_compensate"    type="bool"   value="true"/>
-	</node>
-	
-	<!-- REALSENSE NODE -->
-	<include file="$(find realsense_camera)/launch/r200_nodelet_rgbd.launch"/>
-
+	<node pkg="map_server" type="map_server" name="map_server" args="$(find my_robot)/maps/map.yaml" />
 	<node pkg="amcl" type="amcl" name="amcl">
 		<param name="tf_broadcast" value="true" />
 		<param name="base_frame_id" value="/base_link" />
@@ -22,7 +9,7 @@
 		<param name="odom_frame_id" value="/scanmatch_odom" />
 		<param name="use_map_topic" value="false" />
 
-	    <param name="odom_model_type" value="omni" />
+	    <param name="odom_model_type" value="diff-corrected" />
 	    <param name="transform_tolerance" value="0.2" />
 	    <param name="gui_publish_rate" value="-1.0"/>
 	    <param name="laser_max_beams" value="30"/>
@@ -66,7 +53,6 @@
 		HECTOR STUFF
 	-->
 	
-	<!--node pkg="tf" type="static_transform_publisher" name="odom_to_base_link" args="0 0 0 0.0 0.0 0.0 /odom /base_link 50" /-->
 	<node name="hector_mapping" pkg="hector_mapping" type="hector_mapping" output="screen">
    		<remap from="map" to="/mapcurrent" />
     	        <param name="map_frame" value="/mapcurrent" />
@@ -77,7 +63,7 @@
 		<param name="use_tf_pose_start_estimate" value="false"/>
     		<param name="pub_map_odom_transform" value="false" />
     
-		<param name="map_resolution" value="0.075"/>
+		<param name="map_resolution" value="0.1"/>
     		<param name="map_size" value="256"/>
     		<param name="map_start_x" value="0.5"/>
     		<param name="map_start_y" value="0.5" />
@@ -97,9 +83,9 @@
     		<param name="pub_map_scanmatch_transform" value="false" />
     		<param name="tf_map_scanmatch_transform_frame_name" value="scanmatcher_frame" />
 	</node>
-    <node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map /scanmatch_odom 50"/>
-	<node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 0 0 0 0 base_link laser 100" />
-	<node pkg="tf" type="static_transform_publisher" name="base_to_camera_broadcaster" args="0 0 0 0 0 0 base_link camera_link 100" />
+        <node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map /scanmatch_odom 150"/>
+	<node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 0.08 0 0 0 base_link laser 150" />
+	<node pkg="tf" type="static_transform_publisher" name="base_to_camera_broadcaster" args="0.15 0 0 0 0 0 base_link camera_depth_frame 300" />
 
 	<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     	<rosparam file="$(find my_robot)/config/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
@@ -113,16 +99,14 @@
     	<param name="clearing_rotation_allowed" value="false" />
     
     	<param name="base_global_planner" value="global_planner/GlobalPlanner" />
-		<param name="planner_frequency" value="2.0" />
-		<param name="planner_patience" value="5.0" />
+		<param name="planner_frequency" value="5.50" />
+		<param name="planner_patience" value="10.0" />
     
     	<param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
-    	<param name="controller_frequency" value="2.0" />
-		<param name="controller_patience" value="15.0" />
+    	<param name="controller_frequency" value="5.5" />
+	<param name="controller_patience" value="15.0" />
    </node>
-   <node pkg="my_pcl_tutorial" name="example" type="example" output="screen"/>
-        <arg name="input" value="/camera/depth/points" />
 
-   <node pkg="self_driving" name="self_driving_converter" type="twist_to_pololu.py"/>
+   <node pkg="self_driving" name="self_driving" type="twist_to_pololu.py"/>
    
 </launch>

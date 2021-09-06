@@ -1,0 +1,7 @@
+image: empty_circuit.pgm
+resolution: 0.075000
+origin: [-9.637501, -9.637501, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+
