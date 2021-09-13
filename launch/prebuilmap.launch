@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <launch>
 
-	<node pkg="map_server" type="map_server" name="map_server" args="$(find my_robot)/maps/map.yaml" />
+	<node pkg="map_server" type="map_server" name="map_server" args="$(find my_robot)/maps/circuito_pequeno.yaml" />
 	<node pkg="amcl" type="amcl" name="amcl">
 		<param name="tf_broadcast" value="true" />
-		<param name="base_frame_id" value="/base_link" />
+		<param name="base_frame_id" value="/base_footprint" />
 		<param name="global_frame_id" value="/map" />
 		<param name="odom_frame_id" value="/scanmatch_odom" />
 		<param name="use_map_topic" value="false" />
@@ -46,7 +46,7 @@
 	-->
 	<node name="odom_transformer" pkg="odom_transformer" type="transform.py" output="screen">
 		<param name="odom_input" value="/scanmatch_odom" />
-		<param name="tf_output" value="/base_link" />
+		<param name="tf_output" value="/base_footprint" />
 	</node>
 
 	<!--
@@ -56,7 +56,7 @@
 	<node name="hector_mapping" pkg="hector_mapping" type="hector_mapping" output="screen">
    		<remap from="map" to="/mapcurrent" />
     	        <param name="map_frame" value="/mapcurrent" />
-    		<param name="base_frame" value="/base_link" />
+    		<param name="base_frame" value="/base_footprint" />
     		<param name="odom_frame" value="/scanmatcher_odom" />
 		<param name="pub_odometry" value="true" />
     		<param name="use_tf_scan_transformation" value="true"/>
@@ -83,9 +83,10 @@
     		<param name="pub_map_scanmatch_transform" value="false" />
     		<param name="tf_map_scanmatch_transform_frame_name" value="scanmatcher_frame" />
 	</node>
-        <node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map /scanmatch_odom 150"/>
-	<node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 0.08 0 0 0 base_link laser 150" />
-	<node pkg="tf" type="static_transform_publisher" name="base_to_camera_broadcaster" args="0.15 0 0 0 0 0 base_link camera_depth_frame 300" />
+        <node pkg="tf" type="static_transform_publisher" name="map_to_odom" args="0.0 0.0 0.0 0 0 0.0 /map /scanmatch_odom 100"/>
+	<node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0.1 0 0.08 0 0 0 base_link laser 100" />
+	<node pkg="tf" type="static_transform_publisher" name="base_to_camera_broadcaster" args="0.35 0 0 0 0 0 base_link camera_depth_frame 1000" />
+        <node pkg="tf" type="static_transform_publisher" name="base_link_broadcaster" args="-0.2 0 0.1 0 0 0 base_footprint base_link 100" />
 
 	<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     	<rosparam file="$(find my_robot)/config/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
@@ -99,7 +100,7 @@
     	<param name="clearing_rotation_allowed" value="false" />
     
     	<param name="base_global_planner" value="global_planner/GlobalPlanner" />
-		<param name="planner_frequency" value="5.50" />
+		<param name="planner_frequency" value="4.50" />
 		<param name="planner_patience" value="10.0" />
     
     	<param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
